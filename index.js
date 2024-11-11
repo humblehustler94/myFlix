@@ -1,4 +1,6 @@
 // setting up express in project task 2.4
+// the code as of right opens now opens said files like instructed in 2.4 
+// /documentation, /movies = json, 
 const express = require('express');
 const app = express();
 
@@ -49,19 +51,44 @@ let topMovies = [
 
 ];
 
+// adding myLogger functions to project
+let myLogger = (req, res, next) => {
+    console.log(req.url);
+    next();
+}
+
+let requestTime = (req, res, next) => {
+    req.requestTime = Date.now();
+    next();
+};
+
+app.use(myLogger);
+app.use(requestTime);
+
 // GET requests
 // simply retrieving data
+// refactored code.
 app.get('/',(req, res) => {
-    res.send('Welcome to my app!');
+    let responseText = 'Welcome to my app!';
+    responseText += '<small>Requested at:' + req.requestTime + '</small>';
+    res.send(responseText);
 });
-
+/*
 app.get('/documentation', (req, res) => {
     res.sendFile('public/documentation.html', {root: __dirname});
+});
+*/
+app.get('/secreturl', (req, res) => {
+    let responseText = 'This is a secret url with super top-secret content.';
+    responseText += '<small>Requested at:' + req.requestTime + '</small>';
+    res.send(responseText)
+    res.send('This is a secret url with super top-secret content.');
 });
 
 app.get('/movies',(req, res) => {
     res.json(topMovies);
 });
+
 
 // listen for requests
 app.listen(8080,() => {
