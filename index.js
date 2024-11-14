@@ -2,17 +2,17 @@
 // refactor code.
 const express = require('express'),
     // new code 2.4
-    morgan = require('morgan');
-
+    morgan = require('morgan'),
+    fs = require('fs'),
+    path = require('path');
 const app = express();
 
-// new code added 2.4
-const bodyParser = require('body-parser');
-const methodOverride = require('method-override');
+// create a write stream (in append mode)
+// a ‘log.txt’ file is created in root directory
+const accessLogStream = fs.createWriteStream(path.join(__dirname, 'log.txt'), { flags: 'a' })
 
-
-// Morgan middleware --> 2.4
-app.use(morgan('common'));
+// setup the logger
+app.use(morgan('combined', { stream: accessLogStream }));
 
 // Movie list 2.4
 // add 10 movies and year released.
@@ -76,6 +76,7 @@ let requestTime = (req, res, next) => {
 app.use(myLogger);
 app.use(requestTime);
 
+
 // GET requests
 // simply retrieving data
 app.get('/', (req, res) => {
@@ -94,8 +95,14 @@ app.get('/movies', (req, res) => {
     res.json(topMovies);
 });
 
+
 // Static request for documentation --> 2.4 
 app.use(express.static('public'));
+
+
+// new code added 2.4 error handling in express.
+const bodyParser = require('body-parser');
+const methodOverride = require('method-override');
 
 app.use(bodyParser.urlencoded({
     extended: true
@@ -110,6 +117,7 @@ app.use((err, req, res, next) => {
     console.error(err.stack);
     res.status(500).send('Something broke!');
 });
+
 
 // listen for requests
 app.listen(8080, () => {
