@@ -1,7 +1,8 @@
 // setting up express in project task 2.4
-const express = require('express');
-// new code 2.4
-const morgan = require('morgan');
+// refactor code.
+const express = require('express'),
+    // new code 2.4
+    morgan = require('morgan');
 
 const app = express();
 
@@ -11,7 +12,7 @@ const methodOverride = require('method-override');
 
 
 // Morgan middleware --> 2.4
-app.use(morgan('combined'));
+app.use(morgan('common'));
 
 // Movie list 2.4
 // add 10 movies and year released.
