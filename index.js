@@ -1,18 +1,6 @@
-// setting up express in project task 2.4
-// refactor code.
 const express = require('express'),
-    // new code 2.4
-    morgan = require('morgan'),
-    fs = require('fs'),
-    path = require('path');
+    morgan = require('morgan');
 const app = express();
-
-// create a write stream (in append mode)
-// a ‘log.txt’ file is created in root directory
-const accessLogStream = fs.createWriteStream(path.join(__dirname, 'log.txt'), { flags: 'a' })
-
-// setup the logger
-app.use(morgan('combined', { stream: accessLogStream }));
 
 // Movie list 2.4
 // add 10 movies and year released.
@@ -61,24 +49,30 @@ let topMovies = [
 
 ];
 
-// adding myLogger functions to project
+// ADD middleware function: myLogger to project.
 let myLogger = (req, res, next) => {
     console.log(req.url);
     next();
-}
-
+};
+// ADD middleware function: requestTime to project.
 let requestTime = (req, res, next) => {
     req.requestTime = Date.now();
     next();
 };
 
-
+// add this line after middleware
 app.use(myLogger);
 app.use(requestTime);
 
+// APP USING MORGAN
+app.use(morgan('common'));
+
+
+// USING EXPRESS STATIC FOR DOCUMENTATION.HTML
+app.use(express.static('public'));
+
 
 // GET requests
-// simply retrieving data
 app.get('/', (req, res) => {
     res.send('Welcome to my app!');
 });
@@ -95,28 +89,12 @@ app.get('/movies', (req, res) => {
     res.json(topMovies);
 });
 
-
-// Static request for documentation --> 2.4 
-app.use(express.static('public'));
-
-
-// new code added 2.4 error handling in express.
-const bodyParser = require('body-parser');
-const methodOverride = require('method-override');
-
-app.use(bodyParser.urlencoded({
-    extended: true
-}));
-
-app.use(bodyParser.json());
-app.use(methodOverride());
-
-// error handling in express --> 2.4
+// ADD MIDDLEWEAR FUNCTION : ERROR-HANDLING 
 app.use((err, req, res, next) => {
     // logic
     console.error(err.stack);
     res.status(500).send('Something broke!');
-});
+  });
 
 
 // listen for requests
