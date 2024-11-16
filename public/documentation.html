@@ -79,17 +79,17 @@
             </tr>
             <!-- Return data about a genre (descripition) by name/title ("Thiller")-->
             <tr>
-                <td></td>
-                <td></td>
-                <td></td>
+                <td>Return data about a genre</td>
+                <td>/movies/genre/:genreName</td>
+                <td>GET</td>
                 <td></td>
                 <td></td>
                 <td></td>
             </tr>
             <tr>
                 <!--Return data about a Director (bio, birth year, death year) by name-->
-                <td></td>
-                <td></td>
+                <td>Return data about a Director</td>
+                <td>/movies/director/:directorName</td>
                 <td></td>
                 <td></td>
                 <td></td>
@@ -97,36 +97,36 @@
             </tr>
             <tr>
                 <!--Allow new users to register-->
-                <td></td>
-                <td></td>
-                <td></td>
+                <td>New Users Register</td>
+                <td>/users</td>
+                <td>POST</td>
                 <td></td>
                 <td></td>
                 <td></td>
             </tr>
             <tr>
                 <!--Allow users to update their user info (username)-->
-                <td></td>
-                <td></td>
-                <td></td>
+                <td>Update User Name</td>
+                <td>/users/:id</td>
+                <td>PUT</td>
                 <td></td>
                 <td></td>
                 <td></td>
             </tr>
             <tr>
                 <!--Allow users to add a movie to their list of favorites-->
-                <td></td>
-                <td></td>
-                <td></td>
+                <td>Allow users to add a movie to their list of favorites</td>
+                <td>/users/:id/:movieTitle</td>
+                <td>POST</td>
                 <td></td>
                 <td></td>
                 <td></td>
             </tr>
             <tr>
-                <!--Allow users to remvoe a movie from their list of favorites-->
-                <td></td>
-                <td></td>
-                <td></td>
+                <!--Allow users to remove a movie from their list of favorites-->
+                <td>Allow users to remove a movie from their list of favorites--</td>
+                <td>/users/:id/:movieTitle</td>
+                <td>DELETE</td>
                 <td></td>
                 <td></td>
                 <td></td>
@@ -134,9 +134,9 @@
             <tr>
                 <!--Allow existing users to deregister-->
                 <!--showing only a text that a user email has been removed-->
-                <td></td>
-                <td></td>
-                <td></td>
+                <td>Allow existing users to deregister</td>
+                <td>/users/:id</td>
+                <td>DELETE</td>
                 <td></td>
                 <td></td>
                 <td></td>
