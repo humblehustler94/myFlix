@@ -2,6 +2,17 @@ const express = require('express'),
     morgan = require('morgan');
 const app = express();
 
+// 2.8  integrating mongoose w/ a REST API
+// add to the top of your index.js file
+const mongoose = require('mongoose');
+const Models = require('./models.js');
+
+const Movies = Models.Movie;
+const Users = Models.User;
+
+mongoose.connect('mongodb://localhost:27017/myFlixDB', { useNewUrlParser: true, useUnifiedTopology: true });
+
+
 // Movie list 2.4
 // add 10 movies and year released.
 let topMovies = [
@@ -94,7 +105,7 @@ app.use((err, req, res, next) => {
     // logic
     console.error(err.stack);
     res.status(500).send('Something broke!');
-  });
+});
 
 
 // listen for requests
