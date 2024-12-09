@@ -1,4 +1,4 @@
-// 2.8 config mongoose into project
+/* 2.8 config mongoose into project */
 const mongoose = require('mongoose');
 
 let movieSchema = mongoose.Schema({
