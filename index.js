@@ -2,7 +2,7 @@ const express = require('express'),
     bodyParser = require('body-parser'), // 2.5
     uuid = require('uuid'); // 2.5
 
-//app.use(bodyParser.json()); // 2.5
+const morgan = require('morgan'); // 2.4
 
 // 2.8  integrating mongoose w/ a REST API
 // add to the top of your index.js file
@@ -12,18 +12,19 @@ const Models = require('./models.js'); // 2.8
 const Movies = Models.Movie; // 2.8
 const Users = Models.User; // 2.8
 
-mongoose.connect('mongodb://localhost:27017/myFlixDB', { useNewUrlParser: true, useUnifiedTopology: true }); // 2.8
+mongoose.connect('mongodb://127.0.0.1:27017/myFlixDB', { useNewUrlParser: true, useUnifiedTopology: true }); // 2.8
 
 
-const morgan = require('morgan'); // 2.4
 const app = express();
-
+// inserted after const app = express();
+// add these lines if using versions of express above 4.16 to import body-parser
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-
+// comment out no longer needed.
 // Movie list 2.4
 // add 10 movies and year released.
+/*
 let topMovies = [
 
     {
@@ -72,7 +73,7 @@ let topMovies = [
 let users = [];
 
 let movies = [];
-
+*/
 
 // ADD middleware function: myLogger to project.
 let myLogger = (req, res, next) => {
@@ -89,13 +90,97 @@ let requestTime = (req, res, next) => {
 app.use(myLogger);
 app.use(requestTime);
 
+app.use(bodyParser.json()); // 2.5
+
 // APP USING MORGAN
 app.use(morgan('common'));
 
+// GET requests
+// DEFAULT
+//  http://localhost:8080/ --> Welcome to my app!
 
+app.get('/', (req, res) => {
+    res.send('Welcome to my app!');
+});
+
+// might no longer need this code line below.
+app.get('/documentation', (req, res) => {
+    res.sendFile('public/documentation.html', { root: 'public' });
+});
+
+// http://localhost:8080/secreturl --> This is a secret url with super top-secret content. displayed in DOM.
+app.get('/secreturl', (req, res) => {
+    res.send('This is a secret url with super top-secret content.');
+});
+
+// REFACTOR CODE 2.8
+// READ endpoint : get all movies
+// READ IN MONGOOSE 2.8
+// ADDING CODE : 2
+// http://localhost:8080/movies --> results mongoDB movies prev task 2.7 
+// returns all 10 movies
+
+app.get('/movies', (req, res) => {
+    Movies.find()
+        .then((movies) => {
+            res.status(201).json(movies);
+        })
+        .catch((err) => {
+            console.error(err);
+            res.status(500).send("Error:" + err);
+        });
+});
+
+// READ endpoint : Get all users 
+// READ IN MONGOOSE 2.8
+// ADDING CODE : 3
+// http://localhost:8080/users --> results mongoDB users prev task 2.7
+// returns all 4 users
+// code 3
+
+app.get('/users', async (req, res) => {
+    await Users.find()
+        .then((users) => {
+            res.status(201).json(users);
+        })
+        .catch((err) => {
+            console.log(err);
+            res.status(500).send('Error:' + err);
+        })
+})
+
+// READ endpoint : Get a user by username
+// READ IN MONGOOSE 2.8
+// ADDING CODE: 4 
+// http://localhost:8080/users/:Username --> results mongoDB users prev task 2.7
+// http://localhost:8080/users/johndoe 
+// returns 1 user "johndoe"
+
+app.get('/users/:Username', async (req, res) => {
+    await Users.findOne({ Username: req.params.Username})
+    .then((user) => {
+        res.json(user);
+    })
+    .catch((err) => {
+        console.error(err);
+        res.status(500).send('Error:' + err);
+    });
+});
 
 // 2.5 CRUD TO PROJECT video notes part 2 
 // CREATE -- new users
+//  ADD A USER 
+/* WE'LL EXCEPT JSON IN THIS FORMAT
+{
+ID: Integer,
+Username: String,
+Password: String,
+Email: String,
+Birthday: Date
+}
+*/
+
+/*
 app.post('/users', (req, res) => {
     const newUser = req.body;
 
@@ -107,8 +192,44 @@ app.post('/users', (req, res) => {
         res.status(400).send('users need names')
     }
 })
+*/
 
-// UPDATE -- user name
+// CREATE IN MONGOOSE 2.8
+// refactor the following code
+// ADDING CODE - 1 ADD A USER
+// body --> raw --> enter in Username, Password --> results in error asks for Email to Path --> ref MOCK 4 img.
+// add email results are MOCK 5 img.
+
+app.post('/users', async (req, res) => {
+    await Users.findOne({ Username: req.body.Username })
+        .then((user) => {
+            if (user) {
+                return res.status(400).send(req.body.Username + 'already exists');
+            } else {
+                Users
+                    .create({
+                        Username: req.body.Username,
+                        Password: req.body.Password,
+                        Email: req.body.Email,
+                        Birthday: req.body.Birthday
+                    })
+                    .then((user) => { res.status(201).json(user) })
+                    .catch((error) => {
+                        console.error(error);
+                        res.status(500).send('Error:' + error);
+                    })
+            }
+        })
+        .catch((error) => {
+            console.error(error);
+            res.status(500).send('Error:' + error);
+        });
+    //res.send('Successful POST request creating a new user');
+});
+
+
+// UPDATE -- user 
+// 
 app.put('/users/:id', (req, res) => {
     const { id } = req.params;
     const updatedUser = req.body;
@@ -176,16 +297,14 @@ app.delete('/users/:id', (req, res) => {
 
 })
 
+
+
 // USING EXPRESS STATIC FOR DOCUMENTATION.HTML
 app.use(express.static('public'));
 
-// 2.5 CRUD TO PROJECT video notes part 1 
-// READ endpoint
-// gets all movies 
-app.get('/movies', (req, res) => {
-    res.status(200).json(movies);
-})
 
+
+// 2.5 CRUD TO PROJECT video notes part 1 
 // make a READ endpoint
 // returns a movie title
 app.get('/movies/:title', (req, res) => {
@@ -233,22 +352,6 @@ app.get('/movies/directors/:directorName', (req, res) => {
 })
 
 
-// GET requests
-app.get('/', (req, res) => {
-    res.send('Welcome to my app!');
-});
-
-app.get('/documentation', (req, res) => {
-    res.sendFile('public/documentation.html', { root: 'public' });
-});
-
-app.get('/secreturl', (req, res) => {
-    res.send('This is a secret url with super top-secret content.');
-});
-
-app.get('/movies', (req, res) => {
-    res.json(topMovies);
-});
 
 // ADD MIDDLEWEAR FUNCTION : ERROR-HANDLING 
 app.use((err, req, res, next) => {
