@@ -118,7 +118,6 @@ app.get('/secreturl', (req, res) => {
 // REFACTORED CODE
 // http://localhost:8080/movies --> results mongoDB movies prev task 2.7 
 // returns all 10 movies
-
 app.get('/movies', (req, res) => {
     Movies.find()
         .then((movies) => {
@@ -134,7 +133,6 @@ app.get('/movies', (req, res) => {
 // READ endpoint : Get all users 
 // http://localhost:8080/users --> results mongoDB users prev task 2.7
 // returns all 4 users
-
 app.get('/users', async (req, res) => {
     await Users.find()
         .then((users) => {
@@ -151,7 +149,6 @@ app.get('/users', async (req, res) => {
 // http://localhost:8080/users/:Username --> results mongoDB users prev task 2.7
 // http://localhost:8080/users/johndoe 
 // returns 1 user "johndoe"
-
 app.get('/users/:Username', async (req, res) => {
     await Users.findOne({ Username: req.params.Username })
         .then((user) => {
@@ -196,7 +193,6 @@ app.post('/users', (req, res) => {
 // http://localhost:8080/users 
 // body --> raw --> enter in Username, Password --> results in error asks for Email to Path --> ref MOCK 4 img.
 // add email results are MOCK 5 img.
-
 app.post('/users', async (req, res) => {
     await Users.findOne({ Username: req.body.Username })
         .then((user) => {
@@ -293,6 +289,22 @@ app.post('/users/:id/:movieTitle', (req, res) => {
 
 })
 
+// UPDATE IN MONGOOSE : CODE 6 --> 2.8
+// ADD A MOVIE TO A USER'S LIST OF FAVORITES
+app.post('users/:Usersname/movies/:MovieID', async (req, res) => {
+    await Users.findOneAndUpdate({ Username: req.params.Username }, {
+        $push: { FavoriteMovies: req.params.MovieID }
+    },
+        { new: true }) // THIS LINE MAKES SURE THAT THE UPDATED DOCUMENT IS RETURNED
+        .then((updatedUser) => {
+            res.json(updatedUser);
+        })
+        .catch((err) => {
+            console.error(err);
+            res.status(500).send('Error:' + err);
+        });
+});
+
 // DELETE
 // deletes a favorite movie from users favoritesMovie list
 app.delete('/users/:id/:movieTitle', (req, res) => {
@@ -328,30 +340,23 @@ app.delete('/users/:id', (req, res) => {
 
 })
 
-// DELETE IN MONGOOSE : CODE 6  --> 2.8 
+// DELETE IN MONGOOSE : CODE 5  --> 2.8 
 // Delete a user by username
 // http://localhost:8080/user/:Username
 app.delete('/users/:Username', async (req, res) => {
-    await Users.findOneAndRemove({ Username: req.params.Username})
-    .then((user) => {
-        if(!user) {
-            res.status(400).send(req.params.Username + 'was not found');
-        } else {
-            res.status(200).send(req.params.Username + 'was deleted.');
-        }
-    })
-    .catch((err) => {
-        console.error(err);
-        res.status(500).send('Error:'+ err);
-    });
+    await Users.findOneAndRemove({ Username: req.params.Username })
+        .then((user) => {
+            if (!user) {
+                res.status(400).send(req.params.Username + 'was not found');
+            } else {
+                res.status(200).send(req.params.Username + 'was deleted.');
+            }
+        })
+        .catch((err) => {
+            console.error(err);
+            res.status(500).send('Error:' + err);
+        });
 });
-
-
-
-// USING EXPRESS STATIC FOR DOCUMENTATION.HTML
-app.use(express.static('public'));
-
-
 
 // 2.5 CRUD TO PROJECT video notes part 1 
 // make a READ endpoint
@@ -386,7 +391,6 @@ app.get('/movies/genre/:genreName', (req, res) => {
 
 // make a READ endpoint
 // return a directors name
-// 
 app.get('/movies/directors/:directorName', (req, res) => {
     //const title = req.params.title; // old way
     const { directorName } = req.params; // creating a new variable title // deconstruced code.
@@ -400,6 +404,8 @@ app.get('/movies/directors/:directorName', (req, res) => {
 
 })
 
+// USING EXPRESS STATIC FOR DOCUMENTATION.HTML
+app.use(express.static('public'));
 
 
 // ADD MIDDLEWEAR FUNCTION : ERROR-HANDLING 
@@ -410,7 +416,7 @@ app.use((err, req, res, next) => {
 });
 
 
-// listen for requests
+// LISTEN FOR REQUESTS ON PORT 
 app.listen(8080, () => {
     console.log('Your app is listening on port 8080.');
 });
