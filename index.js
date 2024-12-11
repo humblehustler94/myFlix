@@ -113,10 +113,9 @@ app.get('/secreturl', (req, res) => {
     res.send('This is a secret url with super top-secret content.');
 });
 
-// REFACTOR CODE 2.8
+// READ IN MONGOOSE : CODE 2  --> 2.8
 // READ endpoint : get all movies
-// READ IN MONGOOSE 2.8
-// ADDING CODE : 2
+// REFACTORED CODE
 // http://localhost:8080/movies --> results mongoDB movies prev task 2.7 
 // returns all 10 movies
 
@@ -131,12 +130,10 @@ app.get('/movies', (req, res) => {
         });
 });
 
+// READ IN MONGOOSE : CODE 3 --> 2.8
 // READ endpoint : Get all users 
-// READ IN MONGOOSE 2.8
-// ADDING CODE : 3
 // http://localhost:8080/users --> results mongoDB users prev task 2.7
 // returns all 4 users
-// code 3
 
 app.get('/users', async (req, res) => {
     await Users.find()
@@ -149,22 +146,21 @@ app.get('/users', async (req, res) => {
         })
 })
 
+// READ IN MONGOOSE : CODE 4 --> 2.8
 // READ endpoint : Get a user by username
-// READ IN MONGOOSE 2.8
-// ADDING CODE: 4 
 // http://localhost:8080/users/:Username --> results mongoDB users prev task 2.7
 // http://localhost:8080/users/johndoe 
 // returns 1 user "johndoe"
 
 app.get('/users/:Username', async (req, res) => {
-    await Users.findOne({ Username: req.params.Username})
-    .then((user) => {
-        res.json(user);
-    })
-    .catch((err) => {
-        console.error(err);
-        res.status(500).send('Error:' + err);
-    });
+    await Users.findOne({ Username: req.params.Username })
+        .then((user) => {
+            res.json(user);
+        })
+        .catch((err) => {
+            console.error(err);
+            res.status(500).send('Error:' + err);
+        });
 });
 
 // 2.5 CRUD TO PROJECT video notes part 2 
@@ -194,9 +190,10 @@ app.post('/users', (req, res) => {
 })
 */
 
-// CREATE IN MONGOOSE 2.8
+// CREATE IN MONGOOSE : CODE 1 --> 2.8
 // refactor the following code
-// ADDING CODE - 1 ADD A USER
+// CREATE endpoint : Add a new user
+// http://localhost:8080/users 
 // body --> raw --> enter in Username, Password --> results in error asks for Email to Path --> ref MOCK 4 img.
 // add email results are MOCK 5 img.
 
@@ -228,8 +225,42 @@ app.post('/users', async (req, res) => {
 });
 
 
+
+// UPDATE IN MONGOOSE : CODE 5 --> 2.8
 // UPDATE -- user 
-// 
+// http://localhost:8080/users/johndoe 
+// REFACTORED CODE : Update a user's info, by username
+/* we'll expect JSON in this format
+{
+Username: String,
+(required)
+Password: String,
+(required)
+Email: String,
+(required)
+Birthday: Date
+}*/
+app.put('/users/:Username', async (req, res) => {
+    await Users.findOneAndUpdate({ Username: req.params.Username }, {
+        $set:
+        {
+            Username: req.body.Username,
+            Password: req.body.Password,
+            Email: req.body.Email,
+            Birthday: req.body.Birthday
+        }
+    },
+        { new: true }) // THIS LINE MAKES SURE THAT THE UPDATE DOCUMENT IS RETURNED
+        .then((updatedUser) => {
+            res.json(updatedUser);
+        })
+        .catch((err) => {
+            console.error(err);
+            res.status(500).send('Error:' + err);
+        })
+});
+
+
 app.put('/users/:id', (req, res) => {
     const { id } = req.params;
     const updatedUser = req.body;
@@ -296,6 +327,24 @@ app.delete('/users/:id', (req, res) => {
     }
 
 })
+
+// DELETE IN MONGOOSE : CODE 6  --> 2.8 
+// Delete a user by username
+// http://localhost:8080/user/:Username
+app.delete('/users/:Username', async (req, res) => {
+    await Users.findOneAndRemove({ Username: req.params.Username})
+    .then((user) => {
+        if(!user) {
+            res.status(400).send(req.params.Username + 'was not found');
+        } else {
+            res.status(200).send(req.params.Username + 'was deleted.');
+        }
+    })
+    .catch((err) => {
+        console.error(err);
+        res.status(500).send('Error:'+ err);
+    });
+});
 
 
 
