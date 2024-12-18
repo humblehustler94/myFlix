@@ -61,85 +61,173 @@
         <tbody>
             <!-- Get ALL movies-->
             <tr>
+                <td>Return data of all movies</td>
+                <td>http://localhost:8080/movies</td>
+                <td>GET</td>
+                <td>/movies</td>
                 <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
+                <td>A JSON File with all movies</td>
             </tr>
             <tr>
                 <!--Return data (description, genre, director, image URL) -->
+                <td>Return data (description, genre, director, image URL)</td>
+                <td>http://localhost:8080/movies/Inception</td>
+                <td>GET</td>
+                <td>/movies/:title</td>
                 <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
+                <td>A JSON File with movie details about a single movie "Inception"</td>
             </tr>
             <!-- Return data about a genre (descripition) by name/title ("Thiller")-->
             <tr>
                 <td>Return data about a genre</td>
-                <td>/movies/genre/:genreName</td>
+                <td>http://localhost:8080/movies/genre/Thiller</td>
                 <td>GET</td>
-                <td></td>
+                <td>/movies/genre/:genreName</td>
                 <td></td>
                 <td></td>
             </tr>
             <tr>
                 <!--Return data about a Director (bio, birth year, death year) by name-->
                 <td>Return data about a Director</td>
-                <td>/movies/director/:directorName</td>
+                <td>http://localhost:8080/movies/directors/Christopher%20Nolan</td>
                 <td>GET</td>
+                <td>/movies/director/:directorName</td>
                 <td></td>
                 <td></td>
+            </tr>
+            <!-- Get ALL Users-->
+            <tr>
+                <td>Return data of all users</td>
+                <td>http://localhost:8080/users</td>
+                <td>GET</td>
+                <td>/users</td>
                 <td></td>
+                <td>A JSON File with all users</td>
             </tr>
             <tr>
                 <!--Allow new users to register-->
                 <td>New Users Register</td>
-                <td>/users</td>
+                <td>http://localhost:8080/users</td>
                 <td>POST</td>
-                <td></td>
-                <td></td>
-                <td></td>
+                <td>/users</td>
+                <td>
+                    {
+                        "Username" : "flores",
+                        "Password" : "testpassword123",
+                        "Email" : "flores@example.com",
+                        "Birthday" : "01/15/94"
+                    }
+                </td>
+                <td>A JSON Object holding data about a new user added. Including an ID:
+                    {
+                        "Username": "flores",
+                        "Password": "testpassword123",
+                        "Email": "flores@example.com",
+                        "Birthday": "1994-01-15T08:00:00.000Z",
+                        "FavoriteMovies": [],
+                        "_id": "6761cdfa94af0dc4ea8a82e0",
+                        "__v": 0
+                    }
+                </td>
             </tr>
             <tr>
                 <!--Allow users to update their user info (username)-->
-                <td>Update User Name</td>
-                <td>/users/:id</td>
+                <td>Update User Name by Name</td>
+                <td>http://localhost:8080/user/flores</td>
                 <td>PUT</td>
-                <td></td>
-                <td></td>
-                <td></td>
+                <td>/user/:Username</td>
+                <td>
+                    {
+                        "Username" : "flores",
+                        "Password" : "password",
+                        "Email" : "flores@example.com",
+                        "Birthday" : "01/15/94"
+                    } 
+                </td>
+                <td>
+                    {
+                        "_id": "6761cdfa94af0dc4ea8a82e0",
+                        "Username": "flores",
+                        "Password": "password",
+                        "Email": "flores@example.com",
+                        "Birthday": "1994-01-15T08:00:00.000Z",
+                        "FavoriteMovies": [],
+                        "__v": 0
+                    }
+                </td>
             </tr>
             <tr>
                 <!--Allow users to add a movie to their list of favorites-->
                 <td>Allow users to add a movie to their list of favorites</td>
-                <td>/users/:id/:movieTitle</td>
+                <td>http://localhost:8080/users/flores/movies/674f6e99130c43c583893bfe</td>
                 <td>POST</td>
-                <td></td>
-                <td></td>
-                <td></td>
+                <td>/user/:Username/movies/MovieID</td>
+                <td>
+                    {
+                        "Username" : "flores",
+                        "Password" : "password",
+                        "Email" : "flores@example.com",
+                        "Birthday" : "01/15/94"
+                    }
+                </td>
+                <td>
+                    {
+                        "_id": "6761cdfa94af0dc4ea8a82e0",
+                        "Username": "flores",
+                        "Password": "password",
+                        "Email": "flores@example.com",
+                        "Birthday": "1994-01-15T08:00:00.000Z",
+                        "FavoriteMovies": [
+                            "674f6e99130c43c583893bfe"
+                        ],
+                        "__v": 0
+                    }
+                </td>
             </tr>
             <tr>
                 <!--Allow users to remove a movie from their list of favorites-->
                 <td>Allow users to remove a movie from their list of favorites--</td>
-                <td>/users/:id/:movieTitle</td>
+                <td>http://localhost:8080/users/flores/movies/674f6e99130c43c583893bfe</td>
                 <td>DELETE</td>
-                <td></td>
-                <td></td>
-                <td></td>
+                <td>/user/:Username/movies/MovieID</td>
+                <td>
+                    {
+                        "Username" : "flores",
+                        "Password" : "password",
+                        "Email" : "flores@example.com",
+                        "Birthday" : "01/15/94"
+                    }
+                </td>
+                <td>
+
+                    {
+                    "_id": "6761cdfa94af0dc4ea8a82e0",
+                    "Username": "flores",
+                    "Password": "password",
+                    "Email": "flores@example.com",
+                    "Birthday": "1994-01-15T08:00:00.000Z",
+                    "FavoriteMovies": [],
+                    "__v": 0
+                    }
+
+                </td>
             </tr>
             <tr>
                 <!--Allow existing users to deregister-->
                 <!--showing only a text that a user email has been removed-->
                 <td>Allow existing users to deregister</td>
-                <td>/users/:id</td>
+                <td>http://localhost:8080/users/flores</td>
                 <td>DELETE</td>
-                <td></td>
-                <td></td>
-                <td></td>
+                <td>/user/:Username</td>
+                <td>
+                    {
+                        "Username" : "flores",
+                        "Password" : "testpassword123",
+                        "Email" : "flores@example.com",
+                        "Birthday" : "01/15/94"
+                    }
+                </td>
+                <td>flores was deleted.</td>
             </tr>
 
         </tbody>
