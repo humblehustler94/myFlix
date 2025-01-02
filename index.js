@@ -18,7 +18,16 @@ const app = express();
 // inserted after const app = express();
 // add these lines if using versions of express above 4.16 to import body-parser
 app.use(express.json());
+
 app.use(express.urlencoded({ extended: true }));
+
+
+let auth = require('./auth')(app); // import auth.js file into project 2.9
+// add the following code after 
+const passport = require('passport');
+require('./passport');
+
+
 
 // ADD middleware function: myLogger to project.
 let myLogger = (req, res, next) => {
@@ -57,6 +66,7 @@ app.get('/secreturl', (req, res) => {
 // READ IN MONGOOSE : Get all movies
 // READ endpoint : http://localhost:8080/movies
 // refactored code : return all movies from MongoDB 
+/*
 app.get('/movies', (req, res) => {
     Movies.find()
         .then((movies) => {
@@ -67,6 +77,22 @@ app.get('/movies', (req, res) => {
             res.status(500).send("Error:" + err);
         });
 });
+*/
+
+
+// applying JWT  authentication to a specific endpoint 
+// refactor the following code 2.9
+app.get('/movies', passport.authenticate('jwt', { session: false }), async (req, res) => {
+    await Movies.find()
+        .then((movies) => {
+            res.status(201).json(movies);
+        })
+        .catch((err) => {
+            console.error(err);
+            res.status(500).send("Error:" + err);
+        });
+});
+
 
 // READ IN MONGOOSE : Get all users 
 // READ endpoint : http://localhost:8080/users --> results mongoDB users from prev task 2.7
