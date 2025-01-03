@@ -216,7 +216,13 @@ Email: String,
 (required)
 Birthday: Date
 }*/
-app.put('/users/:Username', async (req, res) => {
+// refactor code 2.9 
+app.put('/users/:Username', passport.authenticate('jwt', { session: false }), async (req, res) => {
+    // condition to check added here
+    if (req.user.Username !== req.params.Username) {
+        return res.status(400).send('Permission denied');
+    }
+    // condition ends 
     await Users.findOneAndUpdate({ Username: req.params.Username }, {
         $set:
         {
