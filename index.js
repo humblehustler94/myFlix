@@ -21,6 +21,10 @@ app.use(express.json());
 
 app.use(express.urlencoded({ extended: true }));
 
+// new code added after npm intstall express-validator 
+const { check, validationResult } = require('express-validator');
+
+
 // 2.10 how use CORS within your application
 const cors = require('cors');
 
@@ -195,33 +199,57 @@ app.post('/users', (req, res) => {
 // body --> raw --> enter in Username, Password --> results in error asks for Email to Path --> ref MOCK 4 img.
 // add email results are MOCK 5 img.
 // refactor code to hash the password before storing it hashPassword function --> 2.10
-app.post('/users', async (req, res) => {
-    let hashedPassword = Users.hashPassword(req.body.Password);
-    await Users.findOne({ Username: req.body.Username }) // SEARCH TO SEE IF THE USER WITH THE REQUESTED USERNAME ALREADY EXISTS
-        .then((user) => {
-            if (user) {
-                // IF THE USER IS FOUND, SEND A RESPONSE THAT IT ALREADY EXISTS
-                return res.status(400).send(req.body.Username + 'already exists');
-            } else {
-                Users
-                    .create({
-                        Username: req.body.Username,
-                        Password: hashedPassword,
-                        Email: req.body.Email,
-                        Birthday: req.body.Birthday
-                    })
-                    .then((user) => { res.status(201).json(user) })
-                    .catch((error) => {
-                        console.error(error);
-                        res.status(500).send('Error:' + error);
-                    })
-            }
-        })
-        .catch((error) => {
-            console.error(error);
-            res.status(500).send('Error:' + error);
-        });
-});
+
+// 2.10 Refactor code to use express validator 
+
+// NEW validator as middleware to the routes that require validation syntax
+//check([field in req.body to validate], [error message if validation fails]).[validation method]();
+
+// Validation logic here for request 
+// you can either use a chain of methods like .not() .isEmpty()
+// which mean "opposite of isEmpty" in plain english "is not empty"
+// or use .isLength({min:5}) which means 
+// minium value of 5 characters are only allowed
+app.post('/users', [
+    check('Username', 'Username is required').isLength({ min: 5 }),
+    check('Username', 'Username contains non alphanumeric characters - not allowed.').isAlphanumeric(),
+    check('Password', 'Password is required').not().isEmpty(),
+    check('Email', 'Email does not appear to be valid').isEmail()
+],
+    async (req, res) => {
+
+        // check the validation object for errors
+        let errors = validationResult(req);
+
+        if(!errors.isEmpty()){
+            return res.status(422).json({ errors: errors.array()});
+        }
+        let hashedPassword = Users.hashPassword(req.body.Password);
+        await Users.findOne({ Username: req.body.Username }) // SEARCH TO SEE IF THE USER WITH THE REQUESTED USERNAME ALREADY EXISTS
+            .then((user) => {
+                if (user) {
+                    // IF THE USER IS FOUND, SEND A RESPONSE THAT IT ALREADY EXISTS
+                    return res.status(400).send(req.body.Username + 'already exists');
+                } else {
+                    Users
+                        .create({
+                            Username: req.body.Username,
+                            Password: hashedPassword,
+                            Email: req.body.Email,
+                            Birthday: req.body.Birthday
+                        })
+                        .then((user) => { res.status(201).json(user) })
+                        .catch((error) => {
+                            console.error(error);
+                            res.status(500).send('Error:' + error);
+                        })
+                }
+            })
+            .catch((error) => {
+                console.error(error);
+                res.status(500).send('Error:' + error);
+            });
+    });
 
 // UPDATE IN MONGOOSE : Update a user by username / update a user's information : CODE 5 --> 2.8
 // UPDATE endpoint : http://localhost:8080/users/flores 
