@@ -414,8 +414,6 @@ app.delete('/users/:Username', async (req, res) => {
         });
 });
 
-
-
 // ADD MIDDLEWEAR FUNCTION : ERROR-HANDLING 
 // error handling in express --> 2.4
 app.use((err, req, res, next) => {
@@ -423,7 +421,6 @@ app.use((err, req, res, next) => {
     console.error(err.stack);
     res.status(500).send('Something broke!');
 });
-
 
 // listen for requests
 //  2.10 Refactor your app.listen(); function in your index.js file with the following:
