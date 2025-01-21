@@ -396,7 +396,6 @@ app.delete('/users/:id', (req, res) => {
 })
 */
 
-
 // DELETE IN MONGOOSE : Delete a user by username
 // DELETE endpoint : http://localhost:8080/user/flores
 app.delete('/users/:Username', async (req, res) => {
