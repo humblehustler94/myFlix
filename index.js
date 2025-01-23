@@ -221,8 +221,8 @@ app.post('/users', [
         // check the validation object for errors
         let errors = validationResult(req);
 
-        if(!errors.isEmpty()){
-            return res.status(422).json({ errors: errors.array()});
+        if (!errors.isEmpty()) {
+            return res.status(422).json({ errors: errors.array() });
         }
         let hashedPassword = Users.hashPassword(req.body.Password);
         await Users.findOne({ Username: req.body.Username }) // SEARCH TO SEE IF THE USER WITH THE REQUESTED USERNAME ALREADY EXISTS
@@ -424,7 +424,7 @@ app.use((err, req, res, next) => {
 
 // listen for requests
 //  2.10 Refactor your app.listen(); function in your index.js file with the following:
-const port = process.env.PORT||8080;
+const port = process.env.PORT || 8080;
 app.listen(port, '0.0.0.0', () => {
     console.log('Listening on Port' + port);
 });
