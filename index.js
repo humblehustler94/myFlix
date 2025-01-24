@@ -12,7 +12,8 @@ const Models = require('./models.js'); // 2.8
 const Movies = Models.Movie; // 2.8
 const Users = Models.User; // 2.8
 
-mongoose.connect('mongodb://127.0.0.1:27017/myFlixDB', { useNewUrlParser: true, useUnifiedTopology: true }); // 2.8
+//mongoose.connect('mongodb://127.0.0.1:27017/myFlixDB', { useNewUrlParser: true, useUnifiedTopology: true }); // 2.8
+mongoose.connect('process.env.CONNECTION_URI', { useNewUrlParser: true, useUnifiedTopology: true }); // 2.8
 
 const app = express();
 // inserted after const app = express();
