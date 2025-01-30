@@ -13,8 +13,8 @@ const Movies = Models.Movie; // 2.8
 const Users = Models.User; // 2.8
 
 // this mongoose.connect allows you to test in postman before changing it in 2.10 for heroku app.
-//mongoose.connect('mongodb://127.0.0.1:27017/myFlixDB', { useNewUrlParser: true, useUnifiedTopology: true }); // 2.8
-mongoose.connect('process.env.CONNECTION_URI', { useNewUrlParser: true, useUnifiedTopology: true }); // 2.8
+mongoose.connect('mongodb://127.0.0.1:27017/myFlixDB', { useNewUrlParser: true, useUnifiedTopology: true }); // 2.8
+//mongoose.connect('process.env.CONNECTION_URI', { useNewUrlParser: true, useUnifiedTopology: true }); // 2.8
 
 
 const app = express();
