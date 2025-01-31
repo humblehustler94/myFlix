@@ -17,6 +17,7 @@ mongoose.connect('mongodb://127.0.0.1:27017/myFlixDB', { useNewUrlParser: true, 
 //mongoose.connect('process.env.CONNECTION_URI', { useNewUrlParser: true, useUnifiedTopology: true }); // 2.8
 
 
+
 const app = express();
 // inserted after const app = express();
 // add these lines if using versions of express above 4.16 to import body-parser
