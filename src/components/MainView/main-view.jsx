@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { LoginView } from "../LoginView/login-view"; // 3.5 new code line added.
 import { MovieCard } from "../MovieCard/movie-card";
 import { MovieView } from "../MovieView/movie-view";
+import { SignupView } from "../SignupView/signup-view";
 
 const MainView = () => {
   const [movies, setMovies] = useState([]); // set initial value of movies to an empty array and add setMovies function 
@@ -68,10 +69,17 @@ const MainView = () => {
     localStorage.setItem("token", token);
   };
 
-  // render login view if not logged in
+  // Render login or signup view if not logged in
   if (!user) {
-    return <LoginView onLoggedIn={handleLogin} />;
+    return (
+      <>
+        <LoginView onLoggedIn={handleLogin} />
+        {/* Consider a signup toggle here */}
+        <SignupView onSignedUp={handleSignup} />
+      </>
+    );
   }
+
 
   // Render movies list or selected movie
   return (
