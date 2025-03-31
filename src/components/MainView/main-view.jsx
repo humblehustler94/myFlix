@@ -75,7 +75,7 @@ const MainView = () => {
       <>
         <LoginView onLoggedIn={handleLogin} />
         {/* Consider a signup toggle here */}
-        <SignupView onSignedUp={handleSignup} />
+         <SignupView onSignedUp={handleSignup} /> 
       </>
     );
   }
