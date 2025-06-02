@@ -75,7 +75,7 @@ app.use(bodyParser.json()); // 2.5
 app.use(morgan('common')); // APP USING MORGAN
 
 // USING EXPRESS STATIC FOR DOCUMENTATION.HTML
-app.use(express.static(path.join(__dirname,'public')));
+app.use(express.static('public'));
 
 
 // GET root requests in project --> 2.4
