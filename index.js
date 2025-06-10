@@ -33,7 +33,7 @@ const { check, validationResult } = require('express-validator');
 const cors = require('cors');
 
 // 3.4 update cors to allow access for http://localhost:1234
-let allowedOrigins = ['http://localhost:8080', 'http://testsite.com', 'http://localhost:1234','https://my-flix-client-zugm-jluvfelnb-itzel-elizabeth-flores-projects.vercel.app/'];
+let allowedOrigins = ['http://localhost:8080', 'http://testsite.com', 'http://localhost:1234','https://my-flix-client-psi.vercel.app/login'];
 
 /* rest of code goes here*/
 app.use(cors({
