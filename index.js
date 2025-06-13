@@ -315,17 +315,33 @@ app.put('/users/:id', (req, res) => {
 
 // MONGOOSE - add a movie to a users favoriteMovies
 // POST endpoint - http://localhost:8080/users/flores/movies/674f6e99130c43c583893bfe
-app.post('/users/:Username/movies/:MovieID', async (req, res) => {
+// Refactored code to allow user to like 3 movies
+// MONGOOSE - add a movie to a user's favoriteMovies
+// POST endpoint - http://localhost:8080/users/:Username/movies/:MovieID
+app.post('/users/:Username/movies/:MovieID', passport.authenticate('jwt', { session: false }), async (req, res) => {
+    // --- Add permission check ---
+    if (req.user.Username !== req.params.Username) {
+        return res.status(403).send('Permission denied. You can only add favorites to your own list.');
+    }
+    
     await Users.findOneAndUpdate(
         { Username: req.params.Username },
-        { $set: { FavoriteMovies: req.params.MovieID } },
-        { new: true }
+        { 
+            // Use $addToSet to ADD the movie ID to the array without duplicates
+            $addToSet: { FavoriteMovies: req.params.MovieID } 
+        },
+        { new: true } // This ensures the updated user document is returned
     )
-        .then((updatedUser) => res.json(updatedUser))
-        .catch((err) => {
-            console.error(err);
-            res.status(500).send('Error:' + err);
-        });
+    .then((updatedUser) => {
+        if (!updatedUser) {
+            return res.status(404).send("Error: User not found");
+        }
+        res.json(updatedUser);
+    })
+    .catch((err) => {
+        console.error(err);
+        res.status(500).send('Error:' + err);
+    });
 });
 
 
