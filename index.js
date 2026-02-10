@@ -32,8 +32,8 @@ const { check, validationResult } = require('express-validator');
 // 2.10 how use CORS within your application
 const cors = require('cors');
 
-// 3.4 update cors to allow access for http://localhost:1234
-let allowedOrigins = ['http://localhost:8080', 'http://testsite.com', 'http://localhost:1234', 'https://my-flix-client-two.vercel.app','https://my-flix-client-3sc4skagx-itzel-elizabeth-flores-projects.vercel.app'];
+// 3.4 update cors to allow access for http://localhost:1234 // update cors to allow access for http://localhost:4200
+let allowedOrigins = ['http://localhost:8080', 'http://testsite.com', 'http://localhost:1234', 'http://localhost:4200', 'https://my-flix-client-two.vercel.app','https://my-flix-client-3sc4skagx-itzel-elizabeth-flores-projects.vercel.app'];
 
 /* rest of code goes here*/
 app.use(cors({
