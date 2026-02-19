@@ -5,7 +5,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node index.js",
-    "dev": "nodemon index.js"
+    "dev": "nodemon index.js",
+    "docs": "jsdoc index.js auth.js models.js passport.js"
   },
   "keywords": [],
   "author": "",
@@ -26,6 +27,7 @@
     "uuid": "^11.0.3"
   },
   "devDependencies": {
+    "jsdoc": "^4.0.5",
     "nodemon": "^3.1.7"
   }
 }
