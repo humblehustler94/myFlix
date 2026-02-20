@@ -117,6 +117,24 @@ app.get('/users/:Username', passport.authenticate('jwt', { session: false }), as
 });
 
 /**
+ * GET: Returns a list of all users.
+ * @name GetAllUsers
+ * @kind function
+ * @requires passport - Requires JWT authentication.
+ * @returns {Object[]} - Array of all user objects.
+ */
+app.get('/users', passport.authenticate('jwt', { session: false }), async (req, res) => {
+    await Users.find()
+        .then((users) => {
+            res.status(201).json(users);
+        })
+        .catch((err) => {
+            console.error(err);
+            res.status(500).send('Error: ' + err);
+        });
+});
+
+/**
  * GET: Returns a list of all movies.
  * @name GetMovies
  * @kind function
