@@ -89,6 +89,34 @@ app.get('/', (req, res) => {
 });
 
 /**
+ * GET: Allows a user to get their own data.
+ * @name GetUser
+ * @kind function
+ * @requires passport - Requires JWT authentication.
+ * @param {string} Username - The username.
+ * @returns {Object} - The user object.
+ */
+app.get('/users/:Username', passport.authenticate('jwt', { session: false }), async (req, res) => {
+    // CONDITION: User can only view their own data
+    if (req.user.Username !== req.params.Username) {
+        return res.status(400).send('Permission denied');
+    }
+
+    await Users.findOne({ Username: req.params.Username })
+        .then((user) => {
+            if (!user) {
+                res.status(400).send(req.params.Username + ' was not found');
+            } else {
+                res.json(user);
+            }
+        })
+        .catch((err) => {
+            console.error(err);
+            res.status(500).send('Error: ' + err);
+        });
+});
+
+/**
  * GET: Returns a list of all movies.
  * @name GetMovies
  * @kind function
